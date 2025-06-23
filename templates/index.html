@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعم كيرو - الرئيسية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body style="background-color: {{ theme.secondary }};">
+    <nav class="gold-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>KERO</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="/menu"><i class="fas fa-utensils"></i> القائمة</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="/cart"><i class="fas fa-shopping-cart"></i> سلة التسوق</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+                {% else %}
+                <li><a href="/login"><i class="fas fa-user"></i> تسجيل الدخول</a></li>
+                {% endif %}
+            </ul>
+            <div class="nav-actions">
+                <a href="/menu" class="btn-reserve">تصفح القائمة <i class="fas fa-utensils"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1>مرحباً بكم في مطعم كيرو</h1>
+            <p>تجربة طعام فاخرة لا تُنسى مع أفضل المكونات العالمية</p>
+            <div class="hero-buttons">
+                <a href="/menu" class="btn-reserve">
+                    تصفح القائمة <i class="fas fa-utensils"></i>
+                </a>
+                <a href="#" class="btn-reserve btn-secondary">
+                    حجز طاولة <i class="fas fa-calendar-check"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section class="features-section">
+        <div class="feature-card">
+            <i class="fas fa-award"></i>
+            <h3>أطباق حصرية</h3>
+            <p>وصفات فريدة من شيفنا الحائز على جوائز عالمية</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-leaf"></i>
+            <h3>مكونات طازجة</h3>
+            <p>مكونات عضوية طازجة يومياً من أفضل المزارع</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-star"></i>
+            <h3>تجربة فاخرة</h3>
+            <p>خدمة مميزة في أجواء راقية وأنيقة</p>
+        </div>
+    </section>
+
+    <section class="chef-section">
+        <div class="chef-content">
+            <h2>شيفنا التنفيذي</h2>
+            <p>الشيف أحمد علي، الحائز على ثلاث نجوم ميشلان، يقدم لكم أطباقاً مستوحاة من أفضل المطابخ العالمية مع لمسة
+                شرقية مميزة.</p>
+        </div>
+        <div class="chef-image"></div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-crown"></i>
+                <span>KERO</span>
+            </div>
+            <div class="footer-links">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="/">الرئيسية</a></li>
+                    <li><a href="/menu">القائمة</a></li>
+                    <li><a href="#">عن المطعم</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>اتصل بنا</h3>
+                <p><i class="fas fa-map-marker-alt"></i> شارع الرياض، القاهرة، مصر</p>
+                <p><i class="fas fa-phone"></i> +20 123 456 7890</p>
+                <p><i class="fas fa-envelope"></i> info@kero-restaurant.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 مطعم كيرو. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

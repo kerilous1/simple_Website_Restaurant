@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة كيرو الذهبية</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lightgallery.css') }}">
+</head>
+
+<body style="background-color: {{ theme.secondary }};">
+    <nav class="gold-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>KERO</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="/menu" class="active"><i class="fas fa-utensils"></i> القائمة</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="/cart"><i class="fas fa-shopping-cart"></i> سلة التسوق</a></li>
+                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+                {% else %}
+                <li><a href="/login"><i class="fas fa-user"></i> تسجيل الدخول</a></li>
+                {% endif %}
+            </ul>
+            <div class="nav-actions">
+                <a href="#" class="btn-reserve">حجز طاولة <i class="fas fa-calendar-check"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="menu-header">
+        <div class="header-content">
+            <h1 class="animate__animated animate__fadeInDown">قائمتنا الذهبية</h1>
+            <p class="animate__animated animate__fadeInUp">أطباق حصرية مصنوعة من أفضل المكونات العالمية</p>
+
+            <div class="menu-filters animate__animated animate__fadeIn">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="chef">اختيار الشيف</button>
+                <button class="filter-btn" data-filter="veg">نباتي</button>
+                <button class="filter-btn" data-filter="spicy">حار</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="gallery-container">
+        {% for category in menu|groupby('category') %}
+        <section class="menu-section">
+            <h2 class="section-title">{{ category.grouper }}</h2>
+            <div class="items-grid">
+                {% for item in category.list %}
+                <div class="menu-card"
+                    data-category="{% if item.chef_recommended %}chef{% endif %} {% if item.spicy_level > 0 %}spicy{% endif %} {% if item.vegetarian %}veg{% endif %}">
+                    <div class="card-image">
+                        <a href="{{ url_for('static', filename='images/menu/' + item.gallery[0]) }}"
+                            data-lg-size="1400-800" class="gallery-item">
+                            <img src="{{ url_for('static', filename='images/menu/' + item.image) }}"
+                                alt="{{ item.name }}">
+                            <div class="image-overlay">
+                                <i class="fas fa-expand"></i>
+                            </div>
+                        </a>
+                        {% if item.chef_recommended %}
+                        <div class="chef-badge">
+                            <i class="fas fa-award"></i> اختيار الشيف
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body">
+                        <div class="item-header">
+                            <h3>{{ item.name }}</h3>
+                            <span class="price">{{ item.price }} ج.م</span>
+                        </div>
+
+                        <p class="item-desc">{{ item.description }}</p>
+
+                        <div class="item-meta">
+                            <span class="rating">
+                                {% for i in range(5) %}
+                                <i class="fas fa-star{% if i >= item.rating %}-half-alt{% endif %}"></i>
+                                {% endfor %}
+                                {{ item.rating }}
+                            </span>
+                            <span class="calories"><i class="fas fa-fire"></i> {{ item.calories }}</span>
+                            <span class="time"><i class="fas fa-clock"></i> {{ item.prep_time }}</span>
+                        </div>
+
+                        <div class="item-actions">
+                            <a href="/item/{{ item.id }}" class="btn-details">
+                                التفاصيل <i class="fas fa-arrow-left"></i>
+                            </a>
+                            {% if 'user_id' in session %}
+                            <form action="/cart" method="POST" class="add-to-cart-form">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <button type="submit" class="btn-cart">
+                                    <i class="fas fa-plus"></i> السلة
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </main>
+
+    <footer class="menu-footer">
+        <div class="footer-content">
+            <p>مطعم كيرو &copy; 2023 - جميع الحقوق محفوظة</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/lightgallery.min.js') }}"></script>
+    <script>
+        // معرض الصور
+        $('.gallery-container').lightGallery({
+            selector: '.gallery-item',
+            thumbnail: true,
+            animateThumb: true,
+            showThumbByDefault: true
+        });
+
+        // تصفية الأصناف
+        $('.filter-btn').click(function () {
+            const filter = $(this).data('filter');
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+
+            if (filter === 'all') {
+                $('.menu-card').show();
+            } else {
+                $('.menu-card').hide();
+                $(`.menu-card[data-category*=${filter}]`).show();
+            }
+        });
+    </script>
+</body>
+
+</html>

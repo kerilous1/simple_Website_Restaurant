@@ -1,35 +1,63 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // تنبيهات عامة
-    const alerts = document.querySelectorAll('.alert');
-    alerts.forEach(alert => {
-        setTimeout(() => {
+/**
+ * main.js — Kero Restaurant global client-side behaviour
+ * ========================================================
+ *
+ * Responsibilities:
+ *   1. Auto-dismiss flash/alert messages after 5 seconds.
+ *   2. Validate quantity inputs — enforce a minimum of 1.
+ *   3. Lazy-load images via IntersectionObserver (progressive enhancement).
+ *
+ * All handlers are registered after DOMContentLoaded.
+ * No external libraries required.
+ */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ------------------------------------------------------------------
+    // 1. Auto-dismiss alert / flash messages
+    // ------------------------------------------------------------------
+    document.querySelectorAll('.alert').forEach(function (alert) {
+        setTimeout(function () {
+            alert.style.transition = 'opacity 0.4s ease';
             alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 300);
+            setTimeout(function () {
+                if (alert.parentNode) alert.parentNode.removeChild(alert);
+            }, 400);
         }, 5000);
     });
 
-    // إدارة الكمية في سلة التسوق
-    const quantityInputs = document.querySelectorAll('.quantity-input');
-    quantityInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            if (this.value < 1) this.value = 1;
+    // ------------------------------------------------------------------
+    // 2. Quantity input guard — prevent values below 1
+    //    Bug fix: was comparing DOM string to number without parseInt()
+    // ------------------------------------------------------------------
+    document.querySelectorAll('.quantity-input').forEach(function (input) {
+        input.addEventListener('change', function () {
+            var val = parseInt(this.value, 10);
+            if (isNaN(val) || val < 1) {
+                this.value = 1;
+            }
         });
     });
 
-    // تحميل الصور بشكل كسول
+    // ------------------------------------------------------------------
+    // 3. Lazy image loading via IntersectionObserver
+    //    Falls back gracefully in browsers that do not support the API.
+    // ------------------------------------------------------------------
     if ('IntersectionObserver' in window) {
-        const lazyImages = document.querySelectorAll('img.lazy');
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    img.src = img.dataset.src;
-                    img.classList.remove('lazy');
-                    imageObserver.unobserve(img);
-                }
+        var lazyImages = document.querySelectorAll('img.lazy');
+        if (lazyImages.length > 0) {
+            var observer = new IntersectionObserver(function (entries, obs) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        var img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        obs.unobserve(img);
+                    }
+                });
             });
-        });
-
-        lazyImages.forEach(img => imageObserver.observe(img));
+            lazyImages.forEach(function (img) { observer.observe(img); });
+        }
     }
+
 });

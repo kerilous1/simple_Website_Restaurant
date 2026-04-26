@@ -1,1 +1,9 @@
-[]
+[
+    {
+        "id": "3ff93fe8-91dc-47f4-ab62-4e706a1972e2",
+        "username": "mmm",
+        "password": "scrypt:32768:8:1$kGlgXU3g08KD05do$ce6f05d6ffacfae32763e44804f8426c2430363df4058e899e816333bd18548485ad9a63f8f36ab38dcaa859a73871dff185684d0716b68f4d74ffb6a3fee7b2",
+        "email": "kyrosamy1@gmail.com",
+        "created_at": "2026-04-27 02:06:02"
+    }
+]

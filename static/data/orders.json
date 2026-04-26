@@ -1,1 +1,19 @@
-[]
+[
+    {
+        "id": 1,
+        "user_id": "3ff93fe8-91dc-47f4-ab62-4e706a1972e2",
+        "username": "mmm",
+        "items": [
+            {
+                "id": 1,
+                "name": "بيتزا الترفل الأسود",
+                "price": 85,
+                "quantity": 1,
+                "image": "truffle-pizza.jpg"
+            }
+        ],
+        "total": 85,
+        "status": "pending",
+        "created_at": "2026-04-27 02:11:22"
+    }
+]

@@ -1,79 +1,46 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد الطلب - مطعم كيرو</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
+{% block title %}تأكيد الطلب #{{ order.id }} — مطعم كيرو{% endblock %}
+{% block meta_description %}تم تأكيد طلبك في مطعم كيرو — شكراً لك!{% endblock %}
 
-<body style="background-color: {{ theme.secondary }};">
-    <nav class="gold-nav">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-crown"></i>
-                <span>KERO</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="/menu"><i class="fas fa-utensils"></i> القائمة</a></li>
-                <li><a href="/cart"><i class="fas fa-shopping-cart"></i> سلة التسوق</a></li>
-                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
-            </ul>
-            <div class="nav-actions">
-                <a href="/menu" class="btn-reserve">تصفح القائمة <i class="fas fa-utensils"></i></a>
-            </div>
+{% block content %}
+<main class="confirmation-container">
+    <div class="confirmation-card">
+        <div class="confirmation-icon">
+            <i class="fas fa-check-circle"></i>
         </div>
-    </nav>
+        <h1>شكراً لطلبك!</h1>
+        <p class="order-number">رقم الطلب: #{{ order.id }}</p>
+        <p class="confirmation-message">
+            تم استلام طلبك بنجاح وسيتم تجهيزه في أقرب وقت ممكن.
+            <br>
+            يمكنك تتبع حالة الطلب من خلال صفحة الطلبات الخاصة بك.
+        </p>
 
-    <main class="confirmation-container">
-        <div class="confirmation-card">
-            <div class="confirmation-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h1>شكراً لطلبك!</h1>
-            <p class="order-number">رقم الطلب: #{{ order.id }}</p>
-            <p class="confirmation-message">
-                تم استلام طلبك بنجاح وسيتم تجهيزه في أقرب وقت ممكن.
-                <br>
-                يمكنك تتبع حالة الطلب من خلال صفحة الطلبات الخاصة بك.
-            </p>
-
-            <div class="order-summary">
-                <h3>ملخص الطلب</h3>
-                <div class="summary-items">
-                    {% for item in order.items %}
-                    <div class="summary-item">
-                        <span class="item-name">{{ item.name }} × {{ item.quantity }}</span>
-                        <span class="item-price">{{ item.price * item.quantity }} ج.م</span>
-                    </div>
-                    {% endfor %}
+        <div class="order-summary">
+            <h3>ملخص الطلب</h3>
+            <div class="summary-items">
+                {% for item in order.items %}
+                <div class="summary-item">
+                    <span class="item-name">{{ item.name }} × {{ item.quantity }}</span>
+                    <span class="item-price">{{ item.price * item.quantity }} ج.م</span>
                 </div>
-                <div class="summary-total">
-                    <span>المجموع الكلي:</span>
-                    <span>{{ order.total }} ج.م</span>
-                </div>
+                {% endfor %}
             </div>
-
-            <div class="confirmation-actions">
-                <a href="/menu" class="btn-reserve">
-                    تصفح المزيد <i class="fas fa-utensils"></i>
-                </a>
-                <a href="/" class="btn-reserve btn-secondary">
-                    العودة للرئيسية <i class="fas fa-home"></i>
-                </a>
+            <div class="summary-total">
+                <span>المجموع الكلي:</span>
+                <span>{{ order.total }} ج.م</span>
             </div>
         </div>
-    </main>
 
-    <footer class="confirmation-footer">
-        <div class="footer-content">
-            <p>مطعم كيرو &copy; 2023 - جميع الحقوق محفوظة</p>
+        <div class="confirmation-actions">
+            <a href="{{ url_for('menu') }}" class="btn-reserve">
+                تصفح المزيد <i class="fas fa-utensils"></i>
+            </a>
+            <a href="{{ url_for('home') }}" class="btn-reserve btn-secondary">
+                العودة للرئيسية <i class="fas fa-home"></i>
+            </a>
         </div>
-    </footer>
-</body>
-
-</html>
+    </div>
+</main>
+{% endblock %}

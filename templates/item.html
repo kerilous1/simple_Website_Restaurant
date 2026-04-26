@@ -1,157 +1,164 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ item.name }} - مطعم كيرو</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/lightgallery.css') }}">
-</head>
+{% block title %}{{ item.name }} — مطعم كيرو{% endblock %}
+{% block meta_description %}{{ item.description }}{% endblock %}
 
-<body style="background-color: {{ theme.secondary }};">
-    <nav class="gold-nav">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-crown"></i>
-                <span>KERO</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="/"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li><a href="/menu"><i class="fas fa-utensils"></i> القائمة</a></li>
-                {% if 'user_id' in session %}
-                <li><a href="/cart"><i class="fas fa-shopping-cart"></i> سلة التسوق</a></li>
-                <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
-                {% else %}
-                <li><a href="/login"><i class="fas fa-user"></i> تسجيل الدخول</a></li>
-                {% endif %}
-            </ul>
-            <div class="nav-actions">
-                <a href="/menu" class="btn-reserve">العودة للقائمة <i class="fas fa-utensils"></i></a>
-            </div>
+{% block nav_action %}
+<a href="{{ url_for('menu') }}" class="btn-reserve">
+    العودة للقائمة <i class="fas fa-utensils"></i>
+</a>
+{% endblock %}
+
+{% block content %}
+<main class="item-container">
+
+    <!-- ===== Image Gallery ===== -->
+    <div class="item-gallery">
+        <div class="main-image">
+            <img id="main-img"
+                 src="{{ url_for('static', filename='images/menu/' + item.image) }}"
+                 alt="{{ item.name }}">
         </div>
-    </nav>
-
-    <main class="item-container">
-        <div class="item-gallery">
-            <div class="main-image">
-                <img src="{{ url_for('static', filename='images/menu/' + item.image) }}" alt="{{ item.name }}">
-            </div>
-            <div class="thumbnail-gallery">
-                {% for img in item.gallery %}
-                <img src="{{ url_for('static', filename='images/menu/' + img) }}" alt="{{ item.name }}"
-                    class="thumbnail">
-                {% endfor %}
-            </div>
+        <div class="thumbnail-gallery">
+            {% for img in item.gallery %}
+            <img src="{{ url_for('static', filename='images/menu/' + img) }}"
+                 alt="{{ item.name }} — صورة {{ loop.index }}"
+                 class="thumbnail">
+            {% endfor %}
         </div>
+    </div>
 
-        <div class="item-details">
-            <h1>{{ item.name }}</h1>
-            <h2>{{ item.name_en }}</h2>
+    <!-- ===== Item Details ===== -->
+    <div class="item-details">
+        <h1>{{ item.name }}</h1>
+        <h2>{{ item.name_en }}</h2>
 
-            <div class="price-section">
-                <span class="price">{{ item.price }} ج.م</span>
-                {% if item.chef_recommended %}
-                <span class="chef-badge">
-                    <i class="fas fa-award"></i> اختيار الشيف
-                </span>
-                {% endif %}
-            </div>
-
-            <div class="rating-section">
-                {% for i in range(5) %}
-                <i class="fas fa-star{% if i >= item.rating %}-half-alt{% endif %}"></i>
-                {% endfor %}
-                <span>{{ item.rating }}</span>
-            </div>
-
-            <p class="item-description">{{ item.description }}</p>
-
-            <div class="item-meta">
-                <div class="meta-item">
-                    <i class="fas fa-clock"></i>
-                    <span>وقت التحضير: {{ item.prep_time }}</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-fire"></i>
-                    <span>السعرات الحرارية: {{ item.calories }}</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-pepper-hot"></i>
-                    <span>مستوى الحرارة:
-                        {% for i in range(5) %}
-                        <i class="fas fa-pepper-hot{% if i >= item.spicy_level %}-empty{% endif %}"></i>
-                        {% endfor %}
-                    </span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-leaf"></i>
-                    <span>نباتي: {% if item.vegetarian %}نعم{% else %}لا{% endif %}</span>
-                </div>
-            </div>
-
-            <div class="item-story">
-                <h3>قصة الطبق</h3>
-                <p>{{ item.story }}</p>
-            </div>
-
-            {% if item.addons %}
-            <div class="addons-section">
-                <h3>إضافات اختيارية</h3>
-                <ul class="addons-list">
-                    {% for addon in item.addons %}
-                    <li>
-                        <input type="checkbox" id="addon-{{ addon.id }}" name="addons" value="{{ addon.id }}">
-                        <label for="addon-{{ addon.id }}">{{ addon.name }} (+{{ addon.price }} ج.م)</label>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        <div class="price-section">
+            <span class="price">{{ item.price }} ج.م</span>
+            {% if item.chef_recommended %}
+            <span class="chef-badge">
+                <i class="fas fa-award"></i> اختيار الشيف
+            </span>
             {% endif %}
+        </div>
 
-            <form action="/cart" method="POST" class="add-to-cart-form">
-                <input type="hidden" name="item_id" value="{{ item.id }}">
-                <div class="quantity-selector">
-                    <button type="button" class="quantity-btn minus"><i class="fas fa-minus"></i></button>
-                    <input type="number" name="quantity" value="1" min="1" class="quantity-input">
-                    <button type="button" class="quantity-btn plus"><i class="fas fa-plus"></i></button>
-                </div>
-                <button type="submit" class="btn-add-to-cart">
-                    <i class="fas fa-shopping-cart"></i> أضف إلى السلة
+        <!-- Star rating: filled stars = floor(rating), then handle remainder -->
+        <div class="rating-section">
+            {% set full_stars = item.rating | int %}
+            {% set has_half = (item.rating - full_stars) >= 0.5 %}
+            {% for i in range(full_stars) %}
+                <i class="fas fa-star"></i>
+            {% endfor %}
+            {% if has_half %}
+                <i class="fas fa-star-half-alt"></i>
+            {% endif %}
+            {% for i in range(5 - full_stars - (1 if has_half else 0)) %}
+                <i class="far fa-star"></i>
+            {% endfor %}
+            <span>{{ item.rating }}</span>
+        </div>
+
+        <p class="item-description">{{ item.description }}</p>
+
+        <div class="item-meta">
+            <div class="meta-item">
+                <i class="fas fa-clock"></i>
+                <span>وقت التحضير: {{ item.prep_time }}</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-fire"></i>
+                <span>السعرات الحرارية: {{ item.calories }}</span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-pepper-hot"></i>
+                <span>مستوى الحرارة:
+                    {% for i in range(item.spicy_level) %}
+                        <i class="fas fa-pepper-hot" style="color:var(--accent)"></i>
+                    {% endfor %}
+                    {% for i in range(5 - item.spicy_level) %}
+                        <i class="fas fa-pepper-hot" style="opacity:0.2"></i>
+                    {% endfor %}
+                </span>
+            </div>
+            <div class="meta-item">
+                <i class="fas fa-leaf"></i>
+                <span>نباتي: {% if item.vegetarian %}نعم{% else %}لا{% endif %}</span>
+            </div>
+        </div>
+
+        <div class="item-story">
+            <h3>قصة الطبق</h3>
+            <p>{{ item.story }}</p>
+        </div>
+
+        {% if item.addons %}
+        <div class="addons-section">
+            <h3>إضافات اختيارية</h3>
+            <ul class="addons-list">
+                {% for addon in item.addons %}
+                <li>
+                    <input type="checkbox" id="addon-{{ addon.id }}" name="addons" value="{{ addon.id }}">
+                    <label for="addon-{{ addon.id }}">{{ addon.name }} (+{{ addon.price }} ج.م)</label>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        {% if 'user_id' in session %}
+        <form action="{{ url_for('cart') }}" method="POST" class="add-to-cart-form">
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+            <div class="quantity-selector">
+                <button type="button" class="quantity-btn minus" aria-label="تقليل الكمية">
+                    <i class="fas fa-minus"></i>
                 </button>
-            </form>
-        </div>
-    </main>
+                <input type="number" name="quantity" id="quantity-input"
+                       value="1" min="1" max="20" class="quantity-input">
+                <button type="button" class="quantity-btn plus" aria-label="زيادة الكمية">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <button type="submit" class="btn-add-to-cart">
+                <i class="fas fa-shopping-cart"></i> أضف إلى السلة
+            </button>
+        </form>
+        {% else %}
+        <a href="{{ url_for('login') }}" class="btn-add-to-cart" style="text-decoration:none;display:flex;justify-content:center;">
+            <i class="fas fa-user"></i> سجّل دخولك للإضافة إلى السلة
+        </a>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
 
-    <footer class="item-footer">
-        <div class="footer-content">
-            <p>مطعم كيرو &copy; 2023 - جميع الحقوق محفوظة</p>
-        </div>
-    </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
-        $('.thumbnail').click(function () {
-            const src = $(this).attr('src');
-            $('.main-image img').attr('src', src);
+{% block extra_scripts %}
+<script>
+    /**
+     * item.js (inline) — Thumbnail gallery switcher & quantity stepper.
+     * Uses vanilla JS; no jQuery dependency.
+     */
+    document.addEventListener('DOMContentLoaded', function () {
+        // Thumbnail click → swap main image
+        document.querySelectorAll('.thumbnail').forEach(function (thumb) {
+            thumb.addEventListener('click', function () {
+                document.getElementById('main-img').src = this.src;
+                document.querySelectorAll('.thumbnail').forEach(function (t) {
+                    t.style.borderColor = 'transparent';
+                });
+                this.style.borderColor = 'var(--primary)';
+            });
         });
 
-        // التحكم في الكمية
-        $('.quantity-btn.plus').click(function () {
-            const input = $(this).siblings('.quantity-input');
-            input.val(parseInt(input.val()) + 1);
+        // Quantity stepper
+        var qInput = document.getElementById('quantity-input');
+        document.querySelector('.quantity-btn.plus').addEventListener('click', function () {
+            var val = parseInt(qInput.value, 10);
+            if (val < parseInt(qInput.max, 10)) qInput.value = val + 1;
         });
-
-        $('.quantity-btn.minus').click(function () {
-            const input = $(this).siblings('.quantity-input');
-            if (parseInt(input.val()) > 1) {
-                input.val(parseInt(input.val()) - 1);
-            }
+        document.querySelector('.quantity-btn.minus').addEventListener('click', function () {
+            var val = parseInt(qInput.value, 10);
+            if (val > parseInt(qInput.min, 10)) qInput.value = val - 1;
         });
-    </script>
-</body>
-
-</html>
+    });
+</script>
+{% endblock %}

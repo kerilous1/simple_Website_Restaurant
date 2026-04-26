@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}مطعم كيرو — تجربة طعام فاخرة لا تُنسى مع أفضل المكونات العالمية{% endblock %}">
+    <title>{% block title %}مطعم كيرو{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    <!-- ===== Navigation ===== -->
+    <nav class="gold-nav">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-crown"></i>
+                <span>KERO</span>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="{{ url_for('home') }}" {% if active_page == 'home' %}class="active"{% endif %}>
+                        <i class="fas fa-home"></i> الرئيسية
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('menu') }}" {% if active_page == 'menu' %}class="active"{% endif %}>
+                        <i class="fas fa-utensils"></i> القائمة
+                    </a>
+                </li>
+                {% if 'user_id' in session %}
+                <li>
+                    <a href="{{ url_for('cart') }}" {% if active_page == 'cart' %}class="active"{% endif %}>
+                        <i class="fas fa-shopping-cart"></i> سلة التسوق
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('logout') }}">
+                        <i class="fas fa-sign-out-alt"></i> خروج ({{ session.username }})
+                    </a>
+                </li>
+                {% else %}
+                <li>
+                    <a href="{{ url_for('login') }}" {% if active_page == 'login' %}class="active"{% endif %}>
+                        <i class="fas fa-user"></i> تسجيل الدخول
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="nav-actions">
+                {% block nav_action %}
+                <a href="{{ url_for('menu') }}" class="btn-reserve">
+                    تصفح القائمة <i class="fas fa-utensils"></i>
+                </a>
+                {% endblock %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== Flash Messages ===== -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-times-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- ===== Page Content ===== -->
+    {% block content %}{% endblock %}
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-crown"></i>
+                <span>KERO</span>
+            </div>
+            <div class="footer-links">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">الرئيسية</a></li>
+                    <li><a href="{{ url_for('menu') }}">القائمة</a></li>
+                    {% if 'user_id' in session %}
+                    <li><a href="{{ url_for('cart') }}">سلة التسوق</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('login') }}">تسجيل الدخول</a></li>
+                    <li><a href="{{ url_for('register') }}">إنشاء حساب</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>اتصل بنا</h3>
+                <p><i class="fas fa-map-marker-alt"></i> شارع الرياض، القاهرة، مصر</p>
+                <p><i class="fas fa-phone"></i> +20 123 456 7890</p>
+                <p><i class="fas fa-envelope"></i> info@kero-restaurant.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 مطعم كيرو. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+
+</html>

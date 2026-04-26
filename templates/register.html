@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}إنشاء حساب — مطعم كيرو{% endblock %}
+{% block meta_description %}أنشئ حساباً في مطعم كيرو وابدأ تجربة طعام فاخرة{% endblock %}
+
+{% block content %}
+<main class="auth-wrapper">
+    <div class="login-container">
+        <div class="auth-logo">
+            <i class="fas fa-crown"></i>
+            <span>KERO</span>
+        </div>
+        <h1><i class="fas fa-user-plus"></i> إنشاء حساب جديد</h1>
+
+        {% if error %}
+        <p class="error-message"><i class="fas fa-times-circle"></i> {{ error }}</p>
+        {% endif %}
+
+        <form class="login-form" method="POST" action="{{ url_for('register') }}">
+            <div class="form-group">
+                <label for="username">اسم المستخدم</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="اختر اسم مستخدم"
+                    required
+                    autocomplete="username"
+                >
+            </div>
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@email.com"
+                    required
+                    autocomplete="email"
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="6 أحرف على الأقل"
+                    required
+                    minlength="6"
+                    autocomplete="new-password"
+                >
+            </div>
+            <button type="submit">
+                <i class="fas fa-user-plus"></i> إنشاء الحساب
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <p>لديك حساب بالفعل؟ <a href="{{ url_for('login') }}">تسجيل الدخول</a></p>
+        </div>
+    </div>
+</main>
+{% endblock %}
